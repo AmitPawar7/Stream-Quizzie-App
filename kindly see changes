@@ -1,0 +1,150 @@
+const express = require('express')
+const app = express()
+var cors = require('cors')
+const port = 3000
+const bodyParser = require("body-parser");
+const db = require("./models");
+db.sequelize.sync()
+  .then(() => {
+    console.log("Synced db.");
+  })
+  .catch((err) => {
+    console.log("Failed to sync db: " + err.message);
+  });
+app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
+require("./routes/stock.route")(app);
+
+
+// app.get('/stocks/' , (req, res) => {
+//   db.pool.getConnection()
+//   .then(conn => {
+//     conn.query("SELECT * from stocks")
+//       .then((rows) => {
+//         return res.json({status:"success",stock:{rows}});
+//       })
+//       .then((res) => {
+//         conn.end();
+//       })
+//       .catch(err => {
+//         return res.json({status:"error",message:"No Entry found "});
+//         conn.end();
+//       })
+      
+//   }).catch(err => {
+//     //not connected
+//   });
+// })
+
+// app.get('/stock/:stock_name' , async(req, res) => {
+
+//     try{
+//       redisClient.connect(); 
+//     }catch{
+//       console.log("test");
+//     }
+
+//     var stock_name = req.params.stock_name;
+//     var redis_stock = await redisClient.get(stock_name);
+//     console.log(redis_stock);
+//     if (redis_stock != null){
+//       console.log(redis_stock);
+//       return res.json({status:"success"});
+//     }
+//     await db.pool.getConnection()
+//     .then(conn => {
+//       conn.query("SELECT * from stocks where name='"+stock_name+"'")
+//         .then((rows) => {
+//           var test = await redisClient.set(rows[0].name, rows[0].price);
+//           console.log(test); 
+//           return res.json({status:"success",stock:{name:rows[0].name,price:rows[0].price}});
+//         })
+//         .then((res) => {
+//           conn.end();
+//         })
+//         .catch(err => {
+//           return res.json({status:"error",message:"No Entry found "});
+//           conn.end();
+//         })
+        
+//     }).catch(err => {
+//       //not connected
+//     });
+// })
+
+
+
+
+// app.post('/stock/create' , (req, res) => {
+//   var stock = req.body;
+//     db.pool.getConnection()
+//     .then(conn => {
+//       conn.query("insert into stocks (name,price) values ('"+stock.name+"',"+stock.price+")")
+//         .then((rows) => {
+//           return res.json({status:"success",message:"created"});
+//         })
+//         .then((res) => {
+//           console.log(res);
+//           conn.end();
+//         })
+//         .catch(err => {
+//           return res.json({status:"error",message:"invalid query"});
+//           conn.end();
+//         })
+        
+//     }).catch(err => {
+//       //not connected
+//     });                             
+// })
+
+
+// app.put('/stock/:stock_name' , (req, res) => {
+//     var stock = req.body;
+//     db.pool.getConnection()
+//     .then(conn => {
+//       conn.query("update stocks set price="+stock.price+" where name='"+req.params.stock_name+"'")
+//         .then((rows) => {
+//           return res.json({status:"success",message:"updated"});
+//         })
+//         .then((res) => {
+//           console.log(res);
+//           conn.end();
+//         })
+//         .catch(err => {
+//           return res.json({status:"error",message:"invalid query"});
+//           conn.end();
+//         })
+        
+//     }).catch(err => {
+//       //not connected
+//     });   
+// })
+
+// app.delete('/stock/:stock_name' , (req, res) => {
+//     db.pool.getConnection()
+//     .then(conn => {
+//       conn.query("delete from stocks where name='"+req.params.stock_name+"'")
+//         .then((rows) => {
+//           return res.json({status:"success",message:"deleted"});
+//         })
+//         .then((res) => {
+//           console.log(res);
+//           conn.end();
+//         })
+//         .catch(err => {
+//           return res.json({status:"error",message:"invalid query"});
+//           conn.end();
+//         })
+        
+//     }).catch(err => {
+//       //not connected
+//     });   
+// })
+
+
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
